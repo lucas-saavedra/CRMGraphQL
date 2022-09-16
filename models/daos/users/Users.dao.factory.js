@@ -1,6 +1,5 @@
 
-
-import UserSchema from "../../models/schema/User.schema.js";
+import UserSchema from "../../schema/User.schema.js";
 import UsersDaoDb from "./Users.Dao.Db.js";
 
 let dao;
