@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import DbClient from "../../config/DBClient.js";
+import DbClient from "../DBClient.js";
 import CustomError from "../../utils/customError.utils.js";
 
 let instance;

@@ -1,9 +1,10 @@
 import { ApolloServer } from "apollo-server";
 import jwt from "jsonwebtoken";
 import { connectDb } from "./config/db.js";
-import { resolvers } from "./db/resolvers.js";
-import { typeDefs } from "./db/schema.js";
+
 import { SECRET } from "./env.config.js";
+import { resolvers } from "./graphql/resolvers/resolvers.js";
+import { typeDefs } from "./graphql/schemas/schema.js";
 
 
 //db connection
