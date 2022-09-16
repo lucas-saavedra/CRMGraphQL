@@ -1,5 +1,4 @@
-import getUsersDao from "../daos/users/Users.dao.factory.js";
-
+import getUsersDao from "../models/daos/users/Users.dao.factory.js";
 
 class UserApi {
     constructor() {
@@ -8,10 +7,6 @@ class UserApi {
     async createUserApi(payload) {
         const userCreated = await this.usersDao.createUser(payload);
         return userCreated;
-    }
-    async getUserByUsernameApi(payload) {
-        const user = await this.usersDao.getByUsername(payload);
-        return user;
     }
     async findOneApi(filter = {}) {
         const user = await this.usersDao.findOne(filter);
@@ -36,10 +31,6 @@ class UserApi {
     async deleteByIdApi(id) {
         const deletedUser = await this.usersDao.deleteById(id);
         return deletedUser;
-    }
-    async deleteManyApi(filter) {
-        const deletedUsers = await this.usersDao.deleteMany(filter);
-        return deletedUsers;
     }
 
 }

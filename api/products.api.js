@@ -1,4 +1,5 @@
-import getProductsDao from "../daos/products/Products.dao.factory.js";
+import getProductsDao from "../models/daos/products/Products.dao.factory.js";
+
 
 class ProductApi {
     constructor() {
@@ -12,6 +13,10 @@ class ProductApi {
     async getAllApi(filter = {}) {
         const products = await this.dao.getAll(filter);
         return products;
+    }
+    async findOneApi(filter = {}) {
+        const product = await this.dao.findOne(filter);
+        return product;
     }
     async getByIdApi(id) {
         const product = await this.dao.getById(id);
