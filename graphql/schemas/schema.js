@@ -16,7 +16,7 @@ export const typeDefs =
       lastname:String
       email:String
       createdAt: String
-      editedAt: String
+      updatedAt: String
    }
    type Client {
       id:ID
@@ -27,7 +27,7 @@ export const typeDefs =
       organization: String
       phone: String
       createdAt: String
-      editedAt: String
+      updatedAt: String
    }
    type TopClient{
       total :Float
@@ -41,14 +41,17 @@ export const typeDefs =
       id:ID!
       order:[OrderGroup]
       total: Float
-      client:ID
+      client:Client
       seller:ID
       createdAt:String
-      state: EstadoPedido
+      updatedAt:String
+      state: OrderState
    }
    type OrderGroup {
       id:ID
       quantity:Int
+      name:String
+      price:Float
    }
    type Token {
       token:String
@@ -80,30 +83,32 @@ export const typeDefs =
 
    input OrderProductInput {
       id:ID
-      quantity :Int
+      quantity:Int
+      name:String
+      price:Float
    }
 
    input OrderInput{
+      state:OrderState
       order: [OrderProductInput]
       total : Float
       client:ID
-      state: EstadoPedido
    }
-   enum EstadoPedido {
+   enum OrderState {
       PENDING,
       COMPLETED,
       CANCELLED
    }
    type Query {
-      getUser(token :String!) : User
-      getProduct(productId : String!) : Product
+      getUser : User
+      getProduct(id : String!) : Product
       getProducts:[Product]
       getClients: [Client]
       getClient(id:ID!): Client
       getClientsSeller: [Client]
-      getOrders:[Order]
+      
       getOrder(id:ID!):Order
-      getOrdersSeller:[Order]
+      getOrders:[Order]
       getOrderState(state:String!):[Order]  
 
       #advanced query
@@ -132,7 +137,6 @@ export const typeDefs =
       updateOrder(id:ID!,input:OrderInput!):Order
       deleteOrder(id:ID!):String
       
-  
       
    }
 

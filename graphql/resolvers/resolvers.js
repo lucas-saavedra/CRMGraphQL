@@ -21,18 +21,17 @@ const setToken = (userPayload, secret, expiresIn) => {
 }
 export const resolvers = {
     Query: {
-        getUser: async (_, { token }) => {
+        getUser: async (_, { }, ctx) => {
             try {
-                const user = await jwt.verify(token, SECRET);
-                return user;
+                return ctx.user;
             } catch (error) {
                 return error;
             }
 
         },
-        getProduct: async (_, { productId }) => {
+        getProduct: async (_, { id }) => {
             try {
-                const product = await productAPi.getByIdApi(productId);
+                const product = await productAPi.getByIdApi(id);
                 if (!product) {
                     throw new Error('Product does not exists');
                 }
@@ -85,14 +84,15 @@ export const resolvers = {
             }
 
         },
-        getOrders: async () => {
+        /* getOrders: async () => {
             try {
                 const orders = await ordersApi.getAllApi();
                 return orders;
             } catch (error) {
                 return error;
             }
-        },
+        }, */
+
         getOrder: async (_, { id }, ctx) => {
             try {
                 const order = await ordersApi.getByIdApi(id);
@@ -107,9 +107,9 @@ export const resolvers = {
                 return error;
             }
         },
-        getOrdersSeller: async (_, { }, ctx) => {
+        getOrders: async (_, { }, ctx) => {
             try {
-                const orders = await ordersApi.getAllApi({ seller: ctx.user.id });
+                const orders = await ordersApi.getOrdersPopulatedApi({ seller: ctx.user.id });
                 return orders;
             } catch (error) {
                 return error;
@@ -195,7 +195,7 @@ export const resolvers = {
                 const user = await userApi.createUserApi(userPayload);
                 return user;
             } catch (error) {
-                console.log(error);
+                return error;
             }
         },
         authUser: async (_, { authPayload }) => {
@@ -224,7 +224,7 @@ export const resolvers = {
                 const product = await productAPi.insertApi(input);
                 return product;
             } catch (error) {
-                console.log(error);
+                return error;
             }
         },
         updateProduct: async (_, { id, payload }) => {
@@ -236,7 +236,7 @@ export const resolvers = {
                 const updatedProduct = await productAPi.updateByIdApi(id, payload);
                 return updatedProduct;
             } catch (error) {
-                console.log(error);
+                return error;
             }
         },
         deleteProduct: async (_, { id }) => {
@@ -300,30 +300,37 @@ export const resolvers = {
         },
         //Orders
         newOrder: async (_, { input }, ctx) => {
-            const { client } = input;
-            const clientExists = await clientApi.getByIdApi(client);
-            if (!clientExists) {
-                throw new Error('Client does not exists');
-            }
-            if (clientExists.seller.toString() !== ctx?.user?.id) {
-                throw new Error("You don't have the credentials");
-            }
-            for await (const element of input.order) {
-                const { id } = element;
-                const product = await productAPi.getByIdApi(id);
-                if (element.quantity > product.stock) {
-                    throw new Error(`The product [ ${product.name} ] exceed the actual stock`);
-                } else {
-                    const stock = product.stock - element.quantity;
-                    await productAPi.updateByIdApi(product.id, { stock })
-                }
-            };
+            try {
+                const { client } = input;
 
-            const newOrder = await ordersApi.insertApi({ ...input, seller: ctx.user.id })
-            return newOrder;
+                const clientExists = await clientApi.getByIdApi(client);
+                if (!clientExists) {
+                    throw new Error('Client does not exists');
+                }
+                if (clientExists.seller.toString() !== ctx?.user?.id) {
+                    throw new Error("You don't have the credentials");
+                }
+
+                for await (const element of input.order) {
+                    const { id } = element;
+                    const product = await productAPi.getByIdApi(id);
+                    if (element.quantity > product.stock) {
+                        throw new Error(`The product ${product.name} exceed the actual stock`);
+                    } else {
+                        const stock = Number(product.stock) - Number(element.quantity);
+                        await productAPi.updateByIdApi(product.id, { stock });
+                    }
+                };
+                const newOrder = await ordersApi.insertApi({ ...input, seller: ctx.user.id })
+                const orders = await ordersApi.getOrdersPopulatedApi({ seller: ctx.user.id });
+                return orders.find(order => order.id === newOrder.id);
+            } catch (error) {
+                return error;
+            }
         },
         updateOrder: async (_, { id, input }, ctx) => {
             const { client: clientId } = input;
+
             try {
                 const order = await ordersApi.getByIdApi(id);
                 if (!order) {
