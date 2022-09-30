@@ -18,7 +18,7 @@ const server = new ApolloServer({
         if (token) {
             try {
                 //Token verification
-                const user = jwt.verify(token.replace("Bearer ",""), SECRET);
+                const user = jwt.verify(token.replace("Bearer ", ""), SECRET);
                 return { user };
             } catch (error) {
                 return error
@@ -27,6 +27,6 @@ const server = new ApolloServer({
     }
 });
 
-server.listen().then(({ url }) => {
+server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
     console.log(`${url}`);
 });
