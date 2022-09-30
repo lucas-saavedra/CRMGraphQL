@@ -13,6 +13,7 @@ connectDb();
 
 //server
 const server = new ApolloServer({
+    cache: new InMemoryLRUCache(),
     typeDefs, resolvers, context: ({ req }) => {
         const token = req.headers['authorization'] || "";
         if (token) {
