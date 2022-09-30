@@ -4,7 +4,10 @@ class OrderApi {
     constructor() {
         this.dao = getDao();
     }
-
+    async getOrdersPopulatedApi(filter) {
+        const orders = await this.dao.getOrdersPopulated(filter);
+        return orders;
+    }
     async findOneApi(filter = {}) {
         const user = await this.dao.findOne(filter);
         return user;
