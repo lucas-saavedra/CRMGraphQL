@@ -1,4 +1,5 @@
 import { ApolloServer } from "apollo-server";
+import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
 import jwt from "jsonwebtoken";
 import { connectDb } from "./config/db.js";
 
