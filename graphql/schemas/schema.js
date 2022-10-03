@@ -10,11 +10,13 @@ export const typeDefs =
       createdAt: String
       updatedAt: String
    }
+   
    type User {
       id:ID
       name:String
       lastname:String
       email:String
+      roles:[String]
       createdAt: String
       updatedAt: String
    }

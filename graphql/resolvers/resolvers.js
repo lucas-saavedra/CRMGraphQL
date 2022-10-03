@@ -16,8 +16,8 @@ const clientApi = new ClientApi();
 const ordersApi = new OrderApi();
 
 const setToken = (userPayload, secret, expiresIn) => {
-    const { name, lastname, id, email } = userPayload;
-    return jwt.sign({ id, name, lastname, email }, secret, { expiresIn })
+    const { name, lastname, id, email,roles } = userPayload;
+    return jwt.sign({ id, name, lastname, email,roles }, secret, { expiresIn })
 }
 export const resolvers = {
     Query: {
