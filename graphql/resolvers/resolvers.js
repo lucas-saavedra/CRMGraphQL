@@ -16,8 +16,8 @@ const clientApi = new ClientApi();
 const ordersApi = new OrderApi();
 
 const setToken = (userPayload, secret, expiresIn) => {
-    const { name, lastname, id, email,roles } = userPayload;
-    return jwt.sign({ id, name, lastname, email,roles }, secret, { expiresIn })
+    const { name, lastname, id, email, roles } = userPayload;
+    return jwt.sign({ id, name, lastname, email, roles }, secret, { expiresIn })
 }
 export const resolvers = {
     Query: {
@@ -188,7 +188,7 @@ export const resolvers = {
 
             const salt = await bcryptjs.genSalt(10);
             userPayload.password = await bcryptjs.hash(password, salt);
-
+            
             //*saving data
 
             try {
